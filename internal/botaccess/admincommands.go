@@ -76,6 +76,36 @@ var AdminCommands = []types.AcceptedCommands{
 		Description: "Explains the main functionalities of the bot.",
 		Handler:     AdminHelpCommand,
 	},
+	{
+		Command:     "delay",
+		Description: "Notifies users of a delay",
+		Handler:     DelayCommand,
+	},
+}
+
+func DelayCommand(userMessage tgbotapi.Update, bot *tgbotapi.BotAPI) (feedback string) {
+	queueUsers, err := dbaccess.DelayQueue()
+
+	if err != nil {
+		feedback = delayQueueFeedback
+		log.Printf("Error sending message %v\n", err)
+		return feedback
+	}
+
+	for _, user :=  range queueUsers {
+		telegramHandle := user.UserHandle
+		msg := tgbotapi.NewMessage(user.ChatID, delayQueueFeedback)
+		_, err = bot.Send(msg)
+
+		if err != nil {
+			feedback = "You failed to send delay message to " + telegramHandle + " : " + err.Error()
+			log.Printf("Error sending message to @%s", telegramHandle)
+			return feedback
+		}
+	}
+
+	feedback = "Delay message sent to all users."
+	return feedback
 }
 
 func AddDummyCommand(userMessage tgbotapi.Update, bot *tgbotapi.BotAPI) (feedback string) {

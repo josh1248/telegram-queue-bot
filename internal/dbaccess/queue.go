@@ -103,3 +103,15 @@ func NotifyQueue(position int64) (chatID int64, err error) {
 
 	return user.ChatID, nil
 }
+
+func DelayQueue() ([]types.QueueUser, error) {
+	queue := []types.QueueUser{}
+	if err := db.Select(&queue, `
+	SELECT 
+		queue_id, user_handle, chat_id, (joined_at AT TIME ZONE 'UTC-8') AS joined_at
+	FROM queue;`); err != nil {
+		return nil, fmt.Errorf("failed to get users. %v", err)
+	}
+
+	return queue, nil
+}
