@@ -54,7 +54,7 @@ const (
 
 	nonCommandFeedback string = "Please input a command which starts with '/', like /start"
 
-	invalidCommandFeedback string = "Sorry, I don't recognize your command :("
+	invalidCommandFeedback string = "Sorry, I don't recognize your command :( Would you like to send another command?"
 
 	joinQueueAlreadyJoined string = "You have already joined this queue!"
 	joinQueueSuccess       string = "Joined the queue. (Check the queue with /howlong.)"
