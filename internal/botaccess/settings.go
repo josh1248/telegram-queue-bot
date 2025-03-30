@@ -38,6 +38,8 @@ const (
 
 	/help - view all available functions for this bot.
 
+	/delay - send a delay message to all users.
+
 	Bot controls (users):
 
 	/join - join the photobooth queue.
@@ -105,4 +107,5 @@ const (
 	thirdInQueueFeedback  string = "2 groups left in front of you - please head down to the photobooth!"
 
 	kickedFromQueueFeedback string = "You have been kicked from the queue."
+	delayQueueFeedback      string = "We are experiencing some delay. Thank you for being patient!"
 )
