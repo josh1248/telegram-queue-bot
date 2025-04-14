@@ -4,11 +4,7 @@ Implements a Telegram bot for small to medium-scale events that involve queueing
 Inspired by deprecated queue bot counterparts written in Python here:
 https://github.com/kwokyto/usp-queue-bot
 
-This repository uses Go so that scalability with concurrency will not become an issue.
-
-# progress so far
-15/3/24: Local server hosting now functional.
-29/3/24: Now provides a menu of available options for use
+(Note: The queuebot is in the processing of being ported over to a native Telegram mini app at https://github.com/josh1248/nusc-queuebot-miniapp - no more feature commits will be made.) 
 
 # how to set up
 
