@@ -39,7 +39,7 @@ func RemoveFirstInQueue() (userHandle int64, err error) {
 			FROM 
 				queue
 			ORDER BY 
-				joined_at
+				joined_at ASC, queue_id ASC
 			LIMIT 1
 		)
 		RETURNING chat_id, user_handle;
@@ -66,7 +66,7 @@ func GetPositionInQueue(position int) (userHandle string, chatID int64, err erro
 		FROM 
 			queue 
 		ORDER BY 
-			joined_at;
+			joined_at ASC, queue_id ASC;
 	`)
 
 	fmt.Println(chat)

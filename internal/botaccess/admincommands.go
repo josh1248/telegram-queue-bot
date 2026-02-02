@@ -22,6 +22,11 @@ var AdminCommands = []types.AcceptedCommands{
 		Handler:     SeeQueueCommand,
 	},
 	{
+		Command:     "seequeuefull",
+		Description: "see the entire queue now (admins only).",
+		Handler:     SeeQueueFullCommand,
+	},
+	{
 		Command:     "ping",
 		Description: "send a reminder to the first person in queue.",
 		Handler:     PingCommand,
@@ -96,6 +101,39 @@ func SeeQueueCommand(userMessage tgbotapi.Update, bot *tgbotapi.BotAPI) (feedbac
 
 	var sb strings.Builder
 	sb.WriteString(fmt.Sprintf("People in queue: %v \nQueue open: %v \n\nName		Joined at\n ", len(queueUsers), queuestatus.IsQueueOpen()))
+
+	const maxDisplay = 10
+	displayCount := len(queueUsers)
+	if displayCount > maxDisplay {
+		displayCount = maxDisplay
+	}
+
+	for i := 0; i < displayCount; i++ {
+		sb.WriteString(userToStr(queueUsers[i]))
+	}
+
+	if len(queueUsers) > maxDisplay {
+		sb.WriteString(fmt.Sprintf("+%d people. use /seequeuefull for the entire queue.", len(queueUsers)-maxDisplay))
+	}
+
+	feedback = sb.String()
+	return feedback
+}
+
+func SeeQueueFullCommand(userMessage tgbotapi.Update, bot *tgbotapi.BotAPI) (feedback string) {
+	queueUsers, err := dbaccess.CheckQueueContents()
+	if err != nil {
+		feedback = seeQueueStateFailure
+		log.Println(err)
+		return feedback
+	}
+
+	userToStr := func(user types.QueueUser) string {
+		return fmt.Sprintf("@%s %s\n", user.UserHandle, user.Joined_at.Format("15:04:05"))
+	}
+
+	var sb strings.Builder
+	sb.WriteString(fmt.Sprintf("People in queue: %v \nQueue open: %v \n\nName\t\tJoined at\n ", len(queueUsers), queuestatus.IsQueueOpen()))
 	for _, user := range queueUsers {
 		sb.WriteString(userToStr(user))
 	}

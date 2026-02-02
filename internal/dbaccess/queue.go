@@ -29,7 +29,10 @@ func CheckQueueContents() ([]types.QueueUser, error) {
 	if err := db.Select(&queue, `
 	SELECT 
 		queue_id, user_handle, chat_id, (joined_at AT TIME ZONE 'UTC-8') AS joined_at
-	FROM queue;`); err != nil {
+	FROM 
+		queue
+	ORDER BY
+		joined_at ASC, queue_id ASC;`); err != nil {
 		return nil, fmt.Errorf("failed to get queue state. %v", err)
 	}
 
@@ -97,7 +100,7 @@ func LeaveQueue(userHandle string) error {
 
 func NotifyQueue(position int64) (chatID int64, err error) {
 	user := types.QueueUser{}
-	if err := db.Get(&user, "SELECT (chat_id) FROM queue ORDER BY joined_at OFFSET $1 LIMIT 1;", position-1); err != nil {
+	if err := db.Get(&user, "SELECT chat_id FROM queue ORDER BY joined_at ASC, queue_id ASC OFFSET $1 LIMIT 1;", position-1); err != nil {
 		return 0, fmt.Errorf("failed to get first user in queue: %v", err)
 	}
 
