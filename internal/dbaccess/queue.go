@@ -3,6 +3,7 @@ package dbaccess
 import (
 	"crypto/rand"
 	"fmt"
+	"log"
 	"time"
 
 	types "github.com/josh1248/nusc-queue-bot/internal/types"
@@ -10,8 +11,12 @@ import (
 
 func AddDummy() {
 	username := uuidv4()
-	// Use a dummy chat ID for testing
-	JoinQueue(username, 12345)
+	// Let the DB assign a unique chat_id (pass 0 to indicate default path)
+	if err := JoinQueue(username, 0); err != nil {
+		log.Printf("AddDummy: failed to insert dummy user %s: %v", username, err)
+	} else {
+		log.Printf("AddDummy: inserted dummy user %s", username)
+	}
 }
 
 // uuidv4 returns a random UUID v4 string. Falls back to a timestamped dummy on error.
@@ -28,9 +33,15 @@ func uuidv4() string {
 
 func JoinQueue(username string, chatID int64) error {
 	tx := db.MustBegin()
-	_, err := tx.Exec("INSERT INTO queue (user_handle, chat_id) VALUES ($1, $2);",
-		username, chatID)
+	var err error
+	if chatID == 0 {
+		_, err = tx.Exec("INSERT INTO queue (user_handle) VALUES ($1);", username)
+	} else {
+		_, err = tx.Exec("INSERT INTO queue (user_handle, chat_id) VALUES ($1, $2);",
+			username, chatID)
+	}
 	if err != nil {
+		tx.Rollback()
 		return fmt.Errorf("insertion query failed to execute. %v", err)
 	}
 

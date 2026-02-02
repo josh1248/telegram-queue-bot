@@ -207,19 +207,19 @@ func KickCommand(userMessage tgbotapi.Update, bot *tgbotapi.BotAPI) (feedback st
 	chatID, err := dbaccess.KickPerson(telegramHandle)
 	if err != nil {
 		feedback = "You failed to kick the specified user: " + err.Error()
-		log.Printf("Error sending message %v\n", err)
+		log.Printf("Error kicking user %v\n", err)
 		return feedback
 	}
 
 	msg := tgbotapi.NewMessage(chatID, kickedFromQueueFeedback)
 	_, err = bot.Send(msg)
+	notifyErr := ""
 	if err != nil {
-		feedback = "You failed to kick " + telegramHandle + " : " + err.Error()
-		log.Printf("Error sending message %v\n", err)
-		return feedback
+		log.Printf("Error sending message to kicked user: %v\n", err)
+		notifyErr = fmt.Sprintf(" Note: user could not be notified: %v", err)
 	}
 
-	feedback = "Successfully kicked " + telegramHandle
+	feedback = "Successfully kicked " + telegramHandle + notifyErr
 
 	_, nextPersonChatID, err := dbaccess.GetPositionInQueue(1)
 	if err != nil {
@@ -267,9 +267,10 @@ func RemoveFirstInQueueCommand(userMessage tgbotapi.Update, bot *tgbotapi.BotAPI
 
 	msg := tgbotapi.NewMessage(removed, "Beep boop, thank you for coming =)")
 	_, err = bot.Send(msg)
+	notifyErr := ""
 	if err != nil {
-		log.Printf("Error sending message %v\n", err)
-		return removeFirstInQueueFailure + err.Error()
+		log.Printf("Error sending message to removed user: %v\n", err)
+		notifyErr = fmt.Sprintf(" Note: removed user could not be notified: %v", err)
 	}
 
 	_, nextPersonChatID, _ := dbaccess.GetPositionInQueue(1)
@@ -290,7 +291,7 @@ func RemoveFirstInQueueCommand(userMessage tgbotapi.Update, bot *tgbotapi.BotAPI
 		bot.Send(msg)
 	}
 
-	feedback = removeFirstInQueueSuccess
+	feedback = removeFirstInQueueSuccess + notifyErr
 	return feedback
 }
 
