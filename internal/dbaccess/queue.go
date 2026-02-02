@@ -1,13 +1,29 @@
 package dbaccess
 
 import (
+	"crypto/rand"
 	"fmt"
+	"time"
 
 	types "github.com/josh1248/nusc-queue-bot/internal/types"
 )
 
 func AddDummy() {
-	JoinQueue("test_user", 12345)
+	username := uuidv4()
+	// Use a dummy chat ID for testing
+	JoinQueue(username, 12345)
+}
+
+// uuidv4 returns a random UUID v4 string. Falls back to a timestamped dummy on error.
+func uuidv4() string {
+	b := make([]byte, 16)
+	if _, err := rand.Read(b); err != nil {
+		return fmt.Sprintf("dummy-%d", time.Now().UnixNano())
+	}
+	// set version (4) and variant bits per RFC 4122
+	b[6] = (b[6] & 0x0f) | 0x40
+	b[8] = (b[8] & 0x3f) | 0x80
+	return fmt.Sprintf("%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:16])
 }
 
 func JoinQueue(username string, chatID int64) error {

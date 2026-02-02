@@ -18,13 +18,15 @@ const (
 	adminHelpFeedback string = `
 	Bot controls (admins):
 
-	/seequeue -  see who is in the queue now.
+	/seequeue -  see the first 10 people in the queue now.
+
+	/seequeuefull - see the entire list of people in the queue.
 
 	/ping - remind the first person in the queue to come.
 
 	/done - remove the first person from the queue once they have finished their photo-taking.
 	
-	/kick @handle - remove a person from the queue, e.g. /kick @abc
+	/kick @handle - remove a specific person from the queue, e.g. /kick @abc
 
 	/stopqueue - stop allowing people to join the queue.
 
@@ -37,6 +39,8 @@ const (
 	/removeadmin @handle - remove an admin.
 
 	/help - view all available functions for this bot.
+
+	/addDummy12345 - DEBUG AND TEST only - adds a fake user into the queue.
 
 	Bot controls (users):
 
