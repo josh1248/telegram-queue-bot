@@ -1,7 +1,7 @@
 # nusc-queue-bot
 Implements a Telegram bot for small to medium-scale events that involve queueing, such as for photobooths. Meant for NUSC events, but can be used in any other queue setting.
 
-Inspired by deprecated queue bot counterparts written in Python here:
+Upstream inspiration: This is a fork and used the following deprecated queue bot written in Python for NUSC's predecessor:
 https://github.com/kwokyto/usp-queue-bot
 
 (Note: The queuebot is in the processing of being ported over to a native Telegram mini app at https://github.com/josh1248/nusc-queuebot-miniapp - no more feature commits will be made.) 
@@ -32,13 +32,20 @@ https://core.telegram.org/bots/tutorial
 
 - :warning: **Important:** Duplicate the .envSETUP key in this folder. Rename this file to ".env", and place in your API token after "BOT_TOKEN". This ".env" file is ignored (by Git) and not committed to GitHub to keep your API secret. (Don't pass this key around, or else people can control your bot!)
 
-## Local deployment - Install Go (what version) and Postgres (what version)
+## Local deployment - Install Go and Postgres
 
 Install the Go parser at https://go.dev/doc/install
 Install a relatively up-to-date PostgreSQL runner at https://www.postgresql.org/download/windows/. For Mac users, I use https://postgresapp.com/, which may be considered.
 Within your coding environment (e.g. VSCode), run `go run cmd/server/main.go`. If any errors result, do check that you have updated your `.env` file appropriately (instructions above), that you have Postgres running, and that your bot token is valid.
 
-## Remote deployment - Heroku
+This app was built in consideration of use in context of a cloud provider. However, if you trust the reliability of your gadgets, feel free to run this on an internet-connected Raspberry or something
+as long as it listens and polls to the telegram-provided endpoint!
+
+## Remote deployment - Railway
+
+I have chosen Railway as my cloud provider because of ease of connecting with preset postgres containers. If you wish to use this method, take note that the `.env` file variables will need to be separately injected since the secrets are of course not present in the public github repo code.
+
+Extra setup required for less friendly main providers like AWS EC2 / Google Cloud run, which I would not claim to be proficient in for now.
 
 
 # running the server (local)
