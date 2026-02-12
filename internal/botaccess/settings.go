@@ -54,7 +54,7 @@ const (
 	/*
 		user command specific messages
 	*/
-	nonTextFeedback string = "I don't know what this is :( please send me text commands!"
+	nonTextFeedback string = "Oops, this is foreign to me:( Please send me text commands, thank you!"
 
 	nonCommandFeedback string = "Please input a command which starts with '/', like /start"
 
